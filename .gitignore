@@ -1,2 +1,6 @@
 /target
 Cargo.lock
+
+# IDE stuff
+/.vscode
+/rls*.log
