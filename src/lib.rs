@@ -19,21 +19,27 @@
 //! assert_eq!(sub, &[2, 3, 4]);
 //! ```
 //!
-//! Modifying through a mutable sub array:
+//! Initializing an `[u8;10]` array with `(u16, u32, u32)`:
 //!
 //! ```
 //! use sub_array::SubArray;
 //!
-//! let mut arr = ["baz".to_string(), "qux".to_string(), "foo".to_string()];
+//! let foo: u16 = 42;
+//! let bar: u32 = 0x1234;
+//! let baz: u32 = 0x5678;
 //!
-//! // Get mutable sub-array starting at offset 2 (last element)
-//! let sub: &mut [String; 1] = arr.sub_array_mut(2);
-//! sub[0].push_str("bar");
+//! let mut arr = [0_u8; 10];
+//! *arr.sub_array_mut::<2>(0) = foo.to_be_bytes();
+//! *arr.sub_array_mut::<4>(2) = bar.to_be_bytes();
+//! *arr.sub_array_mut::<4>(6) = baz.to_be_bytes();
 //!
-//! // The original array has been modified
 //! assert_eq!(
 //!     arr,
-//!     ["baz".to_string(), "qux".to_string(), "foobar".to_string()]
+//!     [
+//!         0, 42, // foo
+//!         0x0, 0x0, 0x12, 0x34, // bar
+//!         0x0, 0x0, 0x56, 0x78, // baz
+//!     ]
 //! );
 //! ```
 
