@@ -1,6 +1,16 @@
 [package]
 name = "sub-array"
 version = "0.1.0"
+authors = ["Cryptjar <cryptjar@junk.studio>"]
+license = "Apache-2.0"
 edition = "2021"
+
+description = "Extract a sub-array out of an array"
+keywords = ["slice", "split"]
+categories = ["no-std", "rust-patterns"]
+repository = "https://github.com/cryptjar/sub-array"
+
+[package.metadata.docs.rs]
+all-features = true
 
 [dependencies]

@@ -1,4 +1,7 @@
 #![no_std]
+//
+// This crate is entirely safe (tho that's not a guarantee for the future)
+#![forbid(unsafe_code)]
 
 //! Allows to extract a sub-array out of an array
 //!
@@ -10,18 +13,24 @@
 //! use sub_array::SubArray;
 //!
 //! let arr: [u8; 7] = [1, 2, 3, 4, 5, 6, 7];
-//! let sub: &[u8; 3] = arr.sub_array_ref(1); // start at offset 1
+//!
+//! // Get a sub-array starting at offset 1
+//! let sub: &[u8; 3] = arr.sub_array_ref(1);
 //! assert_eq!(sub, &[2, 3, 4]);
 //! ```
 //!
-//! Getting a mutable sub array:
+//! Modifying through a mutable sub array:
 //!
 //! ```
 //! use sub_array::SubArray;
 //!
 //! let mut arr = ["baz".to_string(), "qux".to_string(), "foo".to_string()];
-//! let sub = arr.sub_array_mut::<1>(2); // get 1 element at offset 2
+//!
+//! // Get mutable sub-array starting at offset 2 (last element)
+//! let sub: &mut [String; 1] = arr.sub_array_mut(2);
 //! sub[0].push_str("bar");
+//!
+//! // The original array has been modified
 //! assert_eq!(
 //!     arr,
 //!     ["baz".to_string(), "qux".to_string(), "foobar".to_string()]
@@ -33,13 +42,26 @@
 ///
 /// Also see the [crate] level reference.
 pub trait SubArray {
-	/// The value type of this array
+	/// The value type of this array.
+	///
+	/// This is the `T` in `[T; N]` on regular arrays.
 	type Item;
 
 	/// Get a reference to a sub-array of length `N` starting at `offset`.
 	///
 	/// # Panics
 	/// Panics if `offset + N` exceeds the length of this array.
+	///
+	/// # Example
+	/// ```
+	/// use sub_array::SubArray;
+	///
+	/// let arr: [u8; 5] = [9, 8, 7, 6, 5];
+	///
+	/// // Get a sub-array starting at offset 3
+	/// let sub: &[u8; 2] = arr.sub_array_ref(3);
+	/// assert_eq!(sub, &[6, 5]);
+	/// ```
 	fn sub_array_ref<const N: usize>(&self, offset: usize) -> &[Self::Item; N];
 
 	/// Get a mutable reference to a sub-array of length `N` starting at
@@ -47,9 +69,21 @@ pub trait SubArray {
 	///
 	/// # Panics
 	/// Panics if `offset + N` exceeds the length of this array.
+	///
+	/// # Example
+	/// ```
+	/// use sub_array::SubArray;
+	///
+	/// let mut arr: [u8; 5] = [9, 8, 7, 6, 5];
+	///
+	/// // Get a mutable sub-array starting at offset 0
+	/// let sub: &mut [u8; 2] = arr.sub_array_mut(0);
+	/// assert_eq!(sub, &mut [9, 8]);
+	/// ```
 	fn sub_array_mut<const N: usize>(&mut self, offset: usize) -> &mut [Self::Item; N];
 }
 
+/// Implementation on regular arrays
 impl<T, const M: usize> SubArray for [T; M] {
 	type Item = T;
 
