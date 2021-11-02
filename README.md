@@ -1,5 +1,8 @@
 # sub-array
 
+[![Crates.io](https://img.shields.io/crates/v/sub-array.svg)](https://crates.io/crates/sub-array)
+[![API](https://docs.rs/sub-array/badge.svg)](https://docs.rs/sub-array)
+
 <!-- cargo-sync-readme start -->
 
 Allows to extract a sub-array out of an array
@@ -45,4 +48,3 @@ Licensed under Apache License, Version 2.0 ([LICENSE](LICENSE) or https://www.ap
 ## Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project by you, as defined in the Apache-2.0 license, shall be licensed as above, without any additional terms or conditions.
-
