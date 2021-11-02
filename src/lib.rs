@@ -96,6 +96,35 @@ impl<T, const M: usize> SubArray for [T; M] {
 	}
 }
 
+/// Implementation on slices
+impl<T> SubArray for [T] {
+	type Item = T;
+
+	fn sub_array_ref<const N: usize>(&self, offset: usize) -> &[Self::Item; N] {
+		self[offset..(offset + N)].try_into().unwrap()
+	}
+
+	fn sub_array_mut<const N: usize>(&mut self, offset: usize) -> &mut [Self::Item; N] {
+		(&mut self[offset..(offset + N)]).try_into().unwrap()
+	}
+}
+
+/// Implementation on mutable references
+impl<T> SubArray for &mut T
+where
+	T: SubArray,
+{
+	type Item = T::Item;
+
+	fn sub_array_ref<const N: usize>(&self, offset: usize) -> &[Self::Item; N] {
+		(**self).sub_array_ref(offset)
+	}
+
+	fn sub_array_mut<const N: usize>(&mut self, offset: usize) -> &mut [Self::Item; N] {
+		(**self).sub_array_mut(offset)
+	}
+}
+
 
 
 #[cfg(test)]
@@ -200,5 +229,22 @@ mod tests {
 			arr.sub_array_ref::<2>(2),
 			&[String::from("bar"), String::from("qux")]
 		);
+	}
+
+	fn test_by_slice(s: &[u8]) -> &[u8; 3] {
+		s.sub_array_ref(4)
+	}
+
+	#[test]
+	fn slices() {
+		let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9_u8];
+
+		let slice: &[u8] = &arr;
+
+		let arr_ref = test_by_slice(slice);
+
+		assert_eq!(arr_ref, &[5, 6, 7]);
+		assert_eq!(arr_ref, arr.sub_array_ref(4));
+		assert_eq!(arr_ref, &slice[4..7]);
 	}
 }
