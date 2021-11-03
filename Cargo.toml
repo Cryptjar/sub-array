@@ -6,8 +6,8 @@ license = "Apache-2.0"
 edition = "2021"
 
 description = "Extract a sub-array out of an array"
-keywords = ["slice", "split"]
-categories = ["no-std", "rust-patterns"]
+keywords = ["array", "slice", "split"]
+categories = ["no-std", "rust-patterns", "data-structures"]
 repository = "https://github.com/cryptjar/sub-array"
 
 [package.metadata.docs.rs]
