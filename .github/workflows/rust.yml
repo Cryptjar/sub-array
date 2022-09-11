@@ -1,0 +1,50 @@
+name: Rust
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ "v*" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    # Simple Ubuntu image, we use rustup
+    runs-on: ubuntu-latest
+
+    # Matrix build, over stable vs nightly and features
+    strategy:
+        fail-fast: false
+        matrix:
+          rust: [stable, nightly]
+          features: ["--", "--all-features"]
+          exclude:
+            # excludes --all-features on stable, because some features require
+            # nightly Rust
+            - rust: stable
+              features: "--all-features"
+
+
+    # The actual build steps
+    steps:
+      # Getting the code
+    - uses: actions/checkout@v2
+      # Installing the selected Rust version
+    - name: Install Rust ${{ matrix.rust }}
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        profile: minimal
+        override: true
+        components: rustfmt
+
+      # The actual checks
+    - name: Build
+      run: cargo build --verbose ${{ matrix.features }}
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Check formatting
+      if: ${{ matrix.rust == 'nightly' }}
+      run: cargo fmt --check
